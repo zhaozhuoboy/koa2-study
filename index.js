@@ -1,15 +1,26 @@
 const Koa = require('koa');
+const http = require('http');
 const cors = require('@koa/cors');
+const koaBody = require('koa-body');
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
+const logger = require('koa-logger');
+const serve = require('koa-static');
+
 
 const app = new Koa();
+app.use(koaBody({ multipart: true }));
 //关闭cors
 app.use(cors());
-// app.use(async ctx => {
-//     ctx.response.body ={msg:'服务器错误'};
-// });
+//logger
+app.use(logger())
 
-const bodyParser = require('koa-bodyparser');
-app.use(bodyParser());
+app.use(serve(path.join(__dirname, '/public')));
+
+
+
+
 
 const router = require('./router')();
 app.use(router.routes());
@@ -18,4 +29,4 @@ app.use(router.routes());
 
 
 
-app.listen(3000);
+http.createServer(app.callback()).listen(3000);
