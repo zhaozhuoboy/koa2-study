@@ -42,6 +42,20 @@ module.exports = function () {
             file_path: stream.path
         };
     });
+    router.post('/upload/formdata',async (ctx, next) => {
+        let formdata = ctx.request.body.fields;
+        let file = ctx.request.body.files.files;
+        console.log(file)
+        const homeDir = path.resolve(__dirname);
+        const reader = fs.createReadStream(file.path);
+        const stream = fs.createWriteStream(path.join(homeDir, '/public/upload', `upload_${Math.random().toString()}${file.name}`));
+        reader.pipe(stream);
+        console.log('uploading %s -> %s', file.name, stream.path);
+
+        ctx.body = {
+            file_path: stream.path
+        };
+    });
 
     return router
 }
